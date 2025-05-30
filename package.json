@@ -1,0 +1,22 @@
+{
+  "name": "casazium-license",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/cors": "^11.0.1",
+    "dotenv": "^16.5.0",
+    "fastify": "^5.3.3"
+  },
+  "devDependencies": {
+    "sqlite3": "^5.1.7",
+    "vitest": "^3.1.4"
+  }
+}
