@@ -1,6 +1,6 @@
 # Casazium License Server
 
-[![Coverage Status](https://coveralls.io/repos/github/casazium/license/badge.svg?branch=main)](https://coveralls.io/github/casazium/license?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/casazium/license/badge.svg)](https://coveralls.io/github/casazium/license)
 
 A self-hostable Node.js service for managing encrypted license keys with expiration and support for tiered plans. Designed to be used with other Casazium services like `casazium-auth`, or any commercial software product requiring secure license enforcement.
 
