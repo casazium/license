@@ -1,6 +1,6 @@
 // index.js
 import { buildApp } from './src/app.js';
-import config from './src/config.js';
+import config from './lib/config.js';
 
 const start = async () => {
   try {
