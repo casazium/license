@@ -17,4 +17,3 @@ try {
     process.exit(2);
   }
 }
-q;
