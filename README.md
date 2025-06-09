@@ -20,3 +20,8 @@ A self-hostable Node.js service for managing encrypted license keys with expirat
 
 - Node.js 18+
 - SQLite (default, no setup required)
+
+### Environment Variables
+
+- `ENCRYPTION_KEY` (required): hex-encoded 32-byte key used for AES-256-GCM
+- `PORT` (optional): port Fastify listens on (default `3000`)
