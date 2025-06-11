@@ -2,7 +2,7 @@ process.env.ENCRYPTION_KEY =
   '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
 process.env.ENCRYPTION_IV = '000102030405060708090a0b'; // 12 bytes hex
 
-import('../../lib/crypto.js')
+import('../../src/lib/crypto.js')
   .then(({ encrypt }) => {
     const encrypted1 = encrypt('static test');
     const encrypted2 = encrypt('static test');

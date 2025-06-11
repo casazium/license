@@ -1,5 +1,5 @@
 // tests/helpers/random-iv.js
-import { encrypt } from '../../lib/crypto.js';
+import { encrypt } from '../../src/lib/crypto.js';
 
 const PLAINTEXT = 'this is a test';
 

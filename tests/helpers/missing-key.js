@@ -1,5 +1,5 @@
 // tests/helpers/missing-key.js
-import { getKey } from '../../lib/crypto.js';
+import { getKey } from '../../src/lib/crypto.js';
 
 // Ensure ENCRYPTION_KEY is not set
 delete process.env.ENCRYPTION_KEY;

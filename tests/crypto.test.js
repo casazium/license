@@ -1,6 +1,6 @@
 // tests/crypto.test.js
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { encrypt, decrypt } from '../lib/crypto.js';
+import { encrypt, decrypt } from '../src/lib/crypto.js';
 import { execa } from 'execa';
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -38,7 +38,6 @@ describe('Crypto Module (AES-256-GCM)', () => {
 
   it('should throw if ENCRYPTION_KEY is invalid', async () => {
     const script = path.join(__dirname, 'helpers', 'bad-key.js');
-    console.log(script);
     const result = await execa('node', [script], { reject: false });
     expect(result.exitCode).toBe(0); // ✅ Expected failure handled
     expect(result.stdout).toMatch(/Caught expected ENCRYPTION_KEY error/);
@@ -70,7 +69,7 @@ describe('Crypto Module (AES-256-GCM)', () => {
 
   it('should use a valid static IV when ENCRYPTION_IV is set', async () => {
     process.env.ENCRYPTION_IV = '00112233445566778899aabb'; // 12 bytes (24 hex chars)
-    const { encrypt } = await import('../lib/crypto.js');
+    const { encrypt } = await import('../src/lib/crypto.js');
     const ciphertext = encrypt('test');
     expect(typeof ciphertext).toBe('string');
   });

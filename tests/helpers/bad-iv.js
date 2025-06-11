@@ -3,7 +3,7 @@ process.env.ENCRYPTION_KEY = 'a'.repeat(64); // Valid 32-byte key in hex
 process.env.ENCRYPTION_IV = 'deadbeef'; // Invalid IV (too short)
 
 try {
-  const { encrypt } = await import('../../lib/crypto.js');
+  const { encrypt } = await import('../../src/lib/crypto.js');
   encrypt('this will trigger IV validation');
 
   console.error('❌ Expected error for invalid ENCRYPTION_IV was not thrown');

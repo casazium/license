@@ -9,5 +9,6 @@ CREATE TABLE IF NOT EXISTS license_keys (
   issued_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   expires_at DATETIME NOT NULL,
   usage_limit INTEGER,                  -- optional: max activations, requests, etc.
-  usage_count INTEGER DEFAULT 0         -- how much has been used so far
+  usage_count INTEGER DEFAULT 0,        -- how much has been used so far
+  limits TEXT                           -- optional: JSON-encoded object for custom limits
 );

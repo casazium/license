@@ -2,7 +2,7 @@ process.env.ENCRYPTION_KEY = 'shortkey'; // Too short
 delete process.env.ENCRYPTION_IV;
 
 try {
-  const { encrypt } = await import('../../lib/crypto.js');
+  const { encrypt } = await import('../../src/lib/crypto.js');
   encrypt('test'); // Force execution and validation
   console.error('❌ Expected error for invalid ENCRYPTION_KEY was not thrown');
   process.exit(1);

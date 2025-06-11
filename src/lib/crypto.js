@@ -40,7 +40,9 @@ const decrypt = (encryptedBase64) => {
   const authTag = data.slice(12, 28);
   const encrypted = data.slice(28);
 
-  const decipher = crypto.createDecipheriv(ALGO, key, iv);
+  const decipher = crypto.createDecipheriv(ALGO, key, iv, {
+    authTagLength: 16, // bytes (128 bits)
+  });
   decipher.setAuthTag(authTag);
   return decipher.update(encrypted, null, 'utf8') + decipher.final('utf8');
 };
