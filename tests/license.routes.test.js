@@ -34,6 +34,9 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  if (app) {
+    await app.close();
+  }
   await fs.unlink(testDbFile).catch(() => {});
 });
 
