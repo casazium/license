@@ -36,5 +36,9 @@ export async function buildApp() {
   await issueLicenseRoute(app);
   await verifyLicenseRoute(app);
 
+  app.addHook('onClose', async () => {
+    db.close();
+  });
+
   return app;
 }
