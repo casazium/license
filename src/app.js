@@ -9,6 +9,7 @@ import issueLicenseRoute from './routes/issue-license.js';
 import verifyLicenseRoute from './routes/verify-license.js';
 import exportLicenseRoute from './routes/export-license.js';
 import verifyLicenseFileRoute from './routes/verify-license-file.js';
+import revokeLicenseRoute from './routes/revoke-license.js';
 
 //console.log('ENV FILE:', process.env.ENCRYPTION_KEY);
 //console.log('NODE_ENV:', process.env.NODE_ENV);
@@ -39,6 +40,7 @@ export async function buildApp() {
   await verifyLicenseRoute(app);
   await exportLicenseRoute(app);
   await verifyLicenseFileRoute(app);
+  await revokeLicenseRoute(app);
 
   app.addHook('onClose', async () => {
     db.close();
