@@ -26,8 +26,8 @@ beforeAll(async () => {
 
   const db2 = app.sqlite;
   const insert = db2.prepare(`
-    INSERT INTO license_keys (key, tier, product_id, issued_to, expires_at, status, usage_limit, usage_count, limits)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+    INSERT INTO license_keys (key, tier, product_id, issued_to, expires_at, status, limits, usage)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`);
 
   insert.run(
     'active-key',
@@ -36,9 +36,8 @@ beforeAll(async () => {
     'user@example.com',
     '2099-01-01T00:00:00Z',
     'active',
-    10,
-    5,
-    '{}'
+    JSON.stringify({ requests: 10 }),
+    JSON.stringify({ requests: 5 })
   );
   insert.run(
     'revoked-key',
@@ -47,9 +46,8 @@ beforeAll(async () => {
     'user@example.com',
     '2099-01-01T00:00:00Z',
     'revoked',
-    10,
-    5,
-    '{}'
+    JSON.stringify({ requests: 10 }),
+    JSON.stringify({ requests: 5 })
   );
   insert.run(
     'expired-key',
@@ -58,40 +56,52 @@ beforeAll(async () => {
     'user@example.com',
     '2000-01-01T00:00:00Z',
     'active',
-    10,
-    5,
-    '{}'
+    JSON.stringify({ requests: 10 }),
+    JSON.stringify({ requests: 5 })
   );
 });
 
-describe('POST /track-usage', () => {
-  test('increments usage count successfully', async () => {
+describe('POST /track-usage (extended)', () => {
+  test('increments usage for a named metric', async () => {
     const res = await app.inject({
       method: 'POST',
       url: '/track-usage',
-      payload: { key: 'active-key', increment: 2 },
+      payload: { key: 'active-key', metric: 'requests', increment: 2 },
     });
 
     expect(res.statusCode).toBe(200);
-    expect(res.json()).toEqual({ ok: true, usage_count: 7 });
+    expect(res.json()).toEqual({ ok: true, metric: 'requests', usage: 7 });
   });
 
-  test('returns 403 if limit exceeded', async () => {
+  test('returns 403 if named limit exceeded', async () => {
     const res = await app.inject({
       method: 'POST',
       url: '/track-usage',
-      payload: { key: 'active-key', increment: 10 },
+      payload: { key: 'active-key', metric: 'requests', increment: 10 },
     });
 
     expect(res.statusCode).toBe(403);
-    expect(res.json()).toEqual({ error: 'Usage limit exceeded' });
+    expect(res.json()).toEqual({
+      error: 'Usage limit exceeded for metric: requests',
+    });
+  });
+
+  test('returns 403 if metric not allowlisted', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/track-usage',
+      payload: { key: 'active-key', metric: 'activations', increment: 1 },
+    });
+
+    expect(res.statusCode).toBe(403);
+    expect(res.json()).toEqual({ error: 'Metric not allowed: activations' });
   });
 
   test('returns 403 for revoked license', async () => {
     const res = await app.inject({
       method: 'POST',
       url: '/track-usage',
-      payload: { key: 'revoked-key', increment: 1 },
+      payload: { key: 'revoked-key', metric: 'requests', increment: 1 },
     });
 
     expect(res.statusCode).toBe(403);
@@ -102,7 +112,7 @@ describe('POST /track-usage', () => {
     const res = await app.inject({
       method: 'POST',
       url: '/track-usage',
-      payload: { key: 'expired-key', increment: 1 },
+      payload: { key: 'expired-key', metric: 'requests', increment: 1 },
     });
 
     expect(res.statusCode).toBe(403);
@@ -113,7 +123,7 @@ describe('POST /track-usage', () => {
     const res = await app.inject({
       method: 'POST',
       url: '/track-usage',
-      payload: { key: 'missing-key', increment: 1 },
+      payload: { key: 'missing-key', metric: 'requests', increment: 1 },
     });
 
     expect(res.statusCode).toBe(404);

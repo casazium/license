@@ -1,3 +1,5 @@
+-- src/db/schema.sql
+
 CREATE TABLE IF NOT EXISTS license_keys (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   key TEXT UNIQUE NOT NULL,
@@ -7,8 +9,9 @@ CREATE TABLE IF NOT EXISTS license_keys (
   issued_to TEXT NOT NULL,
   issued_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   expires_at DATETIME NOT NULL,
-  revoked_at DATETIME DEFAULT NULL,
   usage_limit INTEGER,
   usage_count INTEGER DEFAULT 0,
-  limits TEXT
+  limits JSON DEFAULT '{}',
+  usage JSON DEFAULT '{}',
+  revoked_at DATETIME
 );
