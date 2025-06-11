@@ -7,6 +7,8 @@ import Database from 'better-sqlite3';
 import config from '../src/lib/config.js'; // ✅ make sure this path is correct
 import issueLicenseRoute from './routes/issue-license.js';
 import verifyLicenseRoute from './routes/verify-license.js';
+import exportLicenseRoute from './routes/export-license.js';
+import verifyLicenseFileRoute from './routes/verify-license-file.js';
 
 //console.log('ENV FILE:', process.env.ENCRYPTION_KEY);
 //console.log('NODE_ENV:', process.env.NODE_ENV);
@@ -35,6 +37,8 @@ export async function buildApp() {
   // e.g., app.register(licenseRoutes);
   await issueLicenseRoute(app);
   await verifyLicenseRoute(app);
+  await exportLicenseRoute(app);
+  await verifyLicenseFileRoute(app);
 
   return app;
 }
