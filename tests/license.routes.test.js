@@ -67,6 +67,40 @@ describe('POST /issue-license', () => {
     expect(res.statusCode).toBe(400);
     expect(res.json().error).toMatch(/required fields/);
   });
+
+  test('returns 400 for unknown limit key', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/issue-license',
+      payload: {
+        tier: 'pro',
+        product_id: 'casazium-auth',
+        issued_to: 'test@example.com',
+        expires_at: '2026-01-01T00:00:00Z',
+        limits: { foo: 123 },
+      },
+    });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.json().error).toMatch(/Unknown limit key/);
+  });
+
+  test('returns 400 for malformed features list', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/issue-license',
+      payload: {
+        tier: 'pro',
+        product_id: 'casazium-auth',
+        issued_to: 'test@example.com',
+        expires_at: '2026-01-01T00:00:00Z',
+        limits: { features: 5 },
+      },
+    });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.json().error).toMatch(/features must be an array/);
+  });
 });
 
 describe('POST /verify-license', () => {
@@ -109,5 +143,58 @@ describe('POST /verify-license', () => {
 
     expect(res.statusCode).toBe(404);
     expect(res.json().valid).toBe(false);
+  });
+
+  test('returns 403 for expired license', async () => {
+    const expiredRes = await app.inject({
+      method: 'POST',
+      url: '/issue-license',
+      payload: {
+        tier: 'free',
+        product_id: 'casazium-auth',
+        issued_to: 'expired@example.com',
+        expires_at: '2000-01-01T00:00:00Z',
+      },
+    });
+    const expiredKey = (await expiredRes.json()).key;
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/verify-license',
+      payload: { key: expiredKey },
+    });
+
+    expect(res.statusCode).toBe(403);
+    expect(res.json().valid).toBe(false);
+    expect(res.json().error).toMatch(/expired/);
+  });
+
+  test('returns 403 for revoked license', async () => {
+    const db = app.sqlite;
+    db.prepare('UPDATE license_keys SET status = ? WHERE key = ?').run(
+      'revoked',
+      key
+    );
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/verify-license',
+      payload: { key },
+    });
+
+    expect(res.statusCode).toBe(403);
+    expect(res.json().valid).toBe(false);
+    expect(res.json().error).toMatch(/not active/);
+  });
+
+  test('returns 400 for missing key in payload', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/verify-license',
+      payload: {},
+    });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.json().error).toMatch(/License key is required/);
   });
 });
