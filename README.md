@@ -14,12 +14,37 @@ A self-hostable Node.js service for managing encrypted license keys with expirat
 - Environment-specific config handling
 - Designed for extensibility and embedding into other systems
 
-## Getting Started
+### 🔐 License Lifecycle
 
-### Requirements
+- `POST /issue-license` – generate new license keys
+- `POST /verify-license` – validate license status
+- `POST /verify-license-file` – validate cryptographically signed license files
+- `POST /revoke-license` – mark licenses as revoked
+- `POST /delete-license` – remove licenses permanently
 
-- Node.js 18+
-- SQLite (default, no setup required)
+### 📊 Usage Enforcement
+
+- `POST /track-usage` – increment named usage metrics (e.g., requests, users, activations)
+- `POST /usage-report` – return limits, usage, and remaining quota per metric
+
+### 🔎 License Management
+
+- `POST /list-license` – filter and paginate license keys by product, status, etc.
+
+---
+
+## 🧪 Test Coverage
+
+- All features tested with Vitest
+- SQLite in-memory or file-based isolation per test run
+- 80%+ test coverage, including edge and error paths
+
+---
+
+## 📦 System Requirements
+
+- Node.js v18+
+- SQLite 3 (via better-sqlite3)
 
 ### Environment Variables
 

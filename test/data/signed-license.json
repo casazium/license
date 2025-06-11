@@ -1,0 +1,9 @@
+{
+  "license": {
+    "key": "your-test-license-key",
+    "tier": "pro",
+    "issued_to": "test@example.com",
+    "expires_at": "2026-01-01T00:00:00Z"
+  },
+  "signature": "LWGBZQkGKCK5YKi03qiZMQhluPyq3oydLr+jYEPRzXPTziAOKp8drCewV9pxSyEmPkMQlQOoEtfMvqkGxVj0ZGx8tqQ2zq/kg9eEv0cZYoAjAn/2opwyERqtaEr5gKECKR6bgAFSnFKBFRaZNYHRpD7HMk8oJcWPOblJFFhrrxvrJlueliLQ889IP+z1WlLzlpKbV4gx/xrmmT0dalMUlSGWMy8O6TXtzX5TR6FcfPIGEjw+pDdc5UoDVEPXhZYm+iTHhxWqJM2kQXqEdYVfwpRzGyOTdrVv79PAPoL8Vh3hm7lL3+gZT3DBVFmjt5EYdzVkmqBE9KDiPsgUJnKvPg=="
+}
