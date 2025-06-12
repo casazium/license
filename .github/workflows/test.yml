@@ -11,42 +11,41 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
-
     steps:
-      - name: 📟 Checkout code
+      - name: 🧾 Checkout code
         uses: actions/checkout@v3
 
-      - name: 🔵 Use Node.js
+      - name: 🟢 Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 22
 
       - name: 📦 Install dependencies
         run: npm ci
 
       - name: 🚀 Start license server
         run: |
-          nohup node src/app.js > server.log 2>&1 &
-          echo "Waiting for server to be ready..."
-          for i in {1..10}; do
-            if curl -s http://localhost:3001/ | grep -q 'License API is running'; then
-              echo "✅ Server is ready"
-              break
-            fi
-            echo "⏳ Waiting... ($i)"
+          nohup node src/start.js > server.log 2>&1 &
+
+      - name: ⏱ Wait for server to become available
+        run: |
+          echo "Waiting for server..."
+          for i in {1..20}; do
+            curl -s http://localhost:3001/ && break
+            echo "Retry $i..."
             sleep 1
           done
 
       - name: 🧪 Run Vitest with coverage
         run: npm run coverage
 
-      - name: 📄 Upload coverage report
+      - name: 📤 Upload coverage report
         uses: actions/upload-artifact@v4
         with:
           name: lcov-report
           path: coverage
 
-      - name: 📈 Upload to Coveralls
+      - name: 🔼 Upload to Coveralls
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -5,7 +5,7 @@ import path from 'node:path';
 import { CasaziumLicenseClient } from '../../sdk/client.js';
 import { issueTestLicense } from './helpers.js';
 
-const BASE_URL = 'http://localhost:3001';
+const BASE_URL = 'http://127.0.0.1:3001';
 
 describe('CasaziumLicenseClient', () => {
   let client;
