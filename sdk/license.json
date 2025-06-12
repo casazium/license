@@ -1,0 +1,13 @@
+{
+  "key": "test-1234",
+  "product_id": "casazium-auth",
+  "tier": "pro",
+  "issued_to": "test@example.com",
+  "issued_at": "2025-06-12T11:51:40Z",
+  "expires_at": "2026-06-12T11:51:40Z",
+  "limits": {
+    "users": 10,
+    "features": ["magic_link"]
+  },
+  "status": "active"
+}

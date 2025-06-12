@@ -1,0 +1,35 @@
+{
+  "name": "casazium-license-client",
+  "version": "0.1.0",
+  "description": "Node.js SDK and CLI for Casazium License Server",
+  "type": "module",
+  "main": "client.js",
+  "exports": {
+    "./client": "./client.js"
+  },
+  "bin": {
+    "casazium-license": "./cli.js"
+  },
+  "scripts": {
+    "test": "vitest"
+  },
+  "keywords": [
+    "license",
+    "sdk",
+    "cli",
+    "casazium",
+    "licensing"
+  ],
+  "author": "Bob Casazza",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rcasazza/casazium-license"
+  },
+  "dependencies": {
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "vitest": "^1.0.0"
+  }
+}
