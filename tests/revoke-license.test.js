@@ -25,6 +25,19 @@ beforeAll(async () => {
   app = await buildApp();
 });
 
+afterAll(async () => {
+  await app?.close?.();
+  if (!testDbFile) return;
+  try {
+    await fs.unlink(testDbFile);
+    // console.log(`Deleted test DB: ${filePath}`);
+  } catch (err) {
+    if (err.code !== 'ENOENT') {
+      console.error(`Failed to delete test DB: ${err.message}`);
+    }
+  }
+});
+
 describe('POST /revoke-license', () => {
   test('revokes an active license successfully', async () => {
     const db = app.sqlite;

@@ -22,7 +22,6 @@ beforeAll(async () => {
   db.exec(schema);
   db.close();
 
-  process.env.DATABASE_FILE = testDbFile;
   process.env.ADMIN_API_KEY = ADMIN_KEY;
   app = await buildApp();
 
@@ -40,6 +39,19 @@ beforeAll(async () => {
       'active',
       '{}'
     );
+});
+
+afterAll(async () => {
+  await app?.close?.();
+  if (!testDbFile) return;
+  try {
+    await fs.unlink(testDbFile);
+    // console.log(`Deleted test DB: ${filePath}`);
+  } catch (err) {
+    if (err.code !== 'ENOENT') {
+      console.error(`Failed to delete test DB: ${err.message}`);
+    }
+  }
 });
 
 describe('DELETE /delete-license', () => {

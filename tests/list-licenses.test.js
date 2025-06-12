@@ -45,6 +45,19 @@ beforeAll(async () => {
   }
 });
 
+afterAll(async () => {
+  await app?.close?.();
+  if (!testDbFile) return;
+  try {
+    await fs.unlink(testDbFile);
+    // console.log(`Deleted test DB: ${filePath}`);
+  } catch (err) {
+    if (err.code !== 'ENOENT') {
+      console.error(`Failed to delete test DB: ${err.message}`);
+    }
+  }
+});
+
 describe('GET /list-licenses', () => {
   test('returns licenses with valid admin key', async () => {
     const res = await app.inject({

@@ -27,6 +27,19 @@ beforeAll(async () => {
   app = await buildApp();
 });
 
+afterAll(async () => {
+  await app?.close?.();
+  if (!testDbFile) return;
+  try {
+    await fs.unlink(testDbFile);
+    // console.log(`Deleted test DB: ${filePath}`);
+  } catch (err) {
+    if (err.code !== 'ENOENT') {
+      console.error(`Failed to delete test DB: ${err.message}`);
+    }
+  }
+});
+
 describe('POST /verify-license-file', () => {
   test('returns valid: true for correctly signed and active license', async () => {
     const validLicense = {
