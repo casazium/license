@@ -4,7 +4,7 @@ import cors from '@fastify/cors';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import Database from 'better-sqlite3';
-import config from '../src/lib/config.js'; // ✅ make sure this path is correct
+import config from '../src/lib/config.js';
 import issueLicenseRoute from './routes/issue-license.js';
 import verifyLicenseRoute from './routes/verify-license.js';
 import exportLicenseRoute from './routes/export-license.js';
@@ -14,9 +14,6 @@ import listLicensesRoute from './routes/list-licenses.js';
 import deleteLicenseRoute from './routes/delete-license.js';
 import trackUsageRoute from './routes/track-usage.js';
 import usageReportRoute from './routes/usage-report.js';
-
-//console.log('ENV FILE:', process.env.ENCRYPTION_KEY);
-//console.log('NODE_ENV:', process.env.NODE_ENV);
 
 export async function buildApp() {
   const app = Fastify({ logger: config.NODE_ENV !== 'test' });
@@ -38,8 +35,7 @@ export async function buildApp() {
     return { message: 'License API is running' };
   });
 
-  // Add routes here as you implement them
-  // e.g., app.register(licenseRoutes);
+  // Routes
   await issueLicenseRoute(app);
   await verifyLicenseRoute(app);
   await exportLicenseRoute(app);
@@ -55,4 +51,20 @@ export async function buildApp() {
   });
 
   return app;
+}
+
+// ✅ Start the server if not in test mode, or if in CI (GitHub Actions)
+if (process.env.NODE_ENV !== 'test' || process.env.CI === 'true') {
+  const PORT = process.env.PORT || 3001;
+  const start = async () => {
+    const app = await buildApp();
+    try {
+      await app.listen({ port: PORT, host: '0.0.0.0' });
+      app.log.info(`License API listening on port ${PORT}`);
+    } catch (err) {
+      app.log.error(err);
+      process.exit(1);
+    }
+  };
+  start();
 }
