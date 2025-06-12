@@ -2,7 +2,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { CasaziumLicenseClient } from '../../sdk/index.js';
+import { CasaziumLicenseClient } from '../../sdk/client.js';
 import { issueTestLicense } from './helpers.js';
 
 const BASE_URL = 'http://localhost:3001';
