@@ -34,17 +34,21 @@ const encrypt = (plaintext) => {
 };
 
 const decrypt = (encryptedBase64) => {
-  const key = getKey();
-  const data = Buffer.from(encryptedBase64, 'base64');
-  const iv = data.slice(0, 12);
-  const authTag = data.slice(12, 28);
-  const encrypted = data.slice(28);
+  try {
+    const key = getKey();
+    const data = Buffer.from(encryptedBase64, 'base64');
+    const iv = data.slice(0, 12);
+    const authTag = data.slice(12, 28);
+    const encrypted = data.slice(28);
 
-  const decipher = crypto.createDecipheriv(ALGO, key, iv, {
-    authTagLength: 16, // bytes (128 bits)
-  });
-  decipher.setAuthTag(authTag);
-  return decipher.update(encrypted, null, 'utf8') + decipher.final('utf8');
+    const decipher = crypto.createDecipheriv(ALGO, key, iv, {
+      authTagLength: 16, // bytes (128 bits)
+    });
+    decipher.setAuthTag(authTag);
+    return decipher.update(encrypted, null, 'utf8') + decipher.final('utf8');
+  } catch (err) {
+    throw new Error('Unable to decrypt license string');
+  }
 };
 
 export { encrypt, decrypt, getKey, getIV };

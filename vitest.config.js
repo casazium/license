@@ -10,9 +10,12 @@ export default {
         '**/__mocks__/**',
         '**/node_modules/**',
         'vitest.config.js',
-        'index.js', // ← entrypoint
-        'src/db/init.js', // ← bootstrap
-        'lib/config.js',
+        'index.js', // ← main entrypoint
+        'src/db/init.js', // ← bootstrap DB setup
+        'lib/config.js', // ← config loader (optional coverage)
+        'sdk/cli.js', // ← CLI entrypoint, tested indirectly
+        'scripts/**', // ← dev scripts (e.g. generate-signed-license.js)
+        '**/setup.js', // ← test setup utilities
       ],
     },
     globals: true,

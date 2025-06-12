@@ -1,4 +1,5 @@
 // sdk/cli.js
+/* c8 ignore start */
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { CasaziumLicenseClient } from './client.js';
