@@ -63,7 +63,10 @@ if (process.env.NODE_ENV !== 'test' || process.env.CI === 'true') {
       app.log.info(`License API listening on port ${PORT}`);
     } catch (err) {
       app.log.error(err);
-      process.exit(1);
+      // ❗ Prevent process.exit in CI so tests can continue/fail gracefully
+      if (process.env.CI !== 'true') {
+        process.exit(1);
+      }
     }
   };
   start();
