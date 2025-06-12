@@ -20,7 +20,12 @@ export class CasaziumLicenseClient {
       },
       this.retries
     );
-    if (!res.ok) throw new Error(`verifyKey failed with ${res.status}`);
+
+    if (!res.ok) {
+      // res.status is still available here
+      throw new Error(`verifyKey failed with ${res.status}`);
+    }
+
     return res.json();
   }
 

@@ -53,7 +53,7 @@ describe('CLI', () => {
     );
 
     const output = stdout || stderr;
-    expect(output).toMatch(/Error: HTTP 404/);
+    expect(output).toMatch(/Error: verifyKey failed with 404/);
     expect(exitCode).not.toBe(0);
   });
 

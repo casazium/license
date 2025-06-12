@@ -1,5 +1,9 @@
 // sdk/lib/http.js
 
+import fetch from 'node-fetch';
+
+// sdk/lib/http.js
+
 export async function fetchWithRetry(
   url,
   options = {},
@@ -11,11 +15,14 @@ export async function fetchWithRetry(
   while (attempt <= maxRetries) {
     try {
       const res = await fetch(url, options);
-      if (res.ok || res.status < 400 || res.status >= 500) {
+
+      // Don't consume body — just return response (client will handle .json() or .text())
+      if (res.ok || (res.status >= 400 && res.status < 500)) {
         return res;
       }
-      // 4xx: do not retry
-      throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+
+      // Retry on 5xx errors
+      throw new Error(`HTTP ${res.status}`);
     } catch (err) {
       if (attempt === maxRetries) throw err;
       const backoff = delay * Math.pow(2, attempt);
