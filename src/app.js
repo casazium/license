@@ -15,6 +15,9 @@ import deleteLicenseRoute from './routes/delete-license.js';
 import trackUsageRoute from './routes/track-usage.js';
 import usageReportRoute from './routes/usage-report.js';
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 export async function buildApp() {
   const app = Fastify({ logger: config.NODE_ENV !== 'test' });
 
