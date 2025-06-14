@@ -7,6 +7,8 @@ import { buildApp } from '../src/app.js';
 
 // Set a unique DB path for each test run
 process.env.DB_FILE = `./test.${process.pid}.db`;
+// Use the same path for the better-sqlite3 connection
+process.env.DATABASE_FILE = process.env.DB_FILE;
 // Provide a default encryption key for tests that don't specify one
 process.env.ENCRYPTION_KEY =
   '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';

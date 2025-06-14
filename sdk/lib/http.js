@@ -1,9 +1,5 @@
 // sdk/lib/http.js
 
-import fetch from 'node-fetch';
-
-// sdk/lib/http.js
-
 export async function fetchWithRetry(
   url,
   options = {},
