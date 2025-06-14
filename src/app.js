@@ -56,21 +56,5 @@ export async function buildApp() {
   return app;
 }
 
-// ✅ Start the server if not in test mode, or if in CI (GitHub Actions)
-if (process.env.NODE_ENV !== 'test' || process.env.CI === 'true') {
-  const PORT = process.env.PORT || 3001;
-  const start = async () => {
-    const app = await buildApp();
-    try {
-      await app.listen({ port: PORT, host: '0.0.0.0' });
-      app.log.info(`License API listening on port ${PORT}`);
-    } catch (err) {
-      app.log.error(err);
-      // ❗ Prevent process.exit in CI so tests can continue/fail gracefully
-      if (process.env.CI !== 'true') {
-        process.exit(1);
-      }
-    }
-  };
-  start();
-}
+// The server is started by index.js to avoid double initialization during
+// module imports. This file only exports the buildApp function.
