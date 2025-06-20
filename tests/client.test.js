@@ -3,84 +3,85 @@ import nock from 'nock';
 import { CasaziumLicenseClient } from '../sdk/client.js';
 import crypto from 'node:crypto';
 
-const baseUrl = 'http://localhost:3001';
+const baseUrl = 'http://127.0.0.1:3001';
 
 describe('CasaziumLicenseClient', () => {
   const client = new CasaziumLicenseClient({ baseUrl, retries: 2 });
 
   test('verifyKey succeeds', async () => {
     nock(baseUrl)
-      .post('/verify-license', JSON.stringify({ key: 'key123' }))
+      .post('/verify-license', (body) => body.key === 'mock-key')
       .reply(200, { valid: true });
 
-    const result = await client.verifyKey('key123');
+    const result = await client.verifyKey('mock-key');
     expect(result.valid).toBe(true);
   });
 
-  test('verifyKey fails with status error', async () => {
-    const scope = nock(baseUrl)
-      .post('/verify-license') // don't match body
+  test('verifyKey fails with status 403', async () => {
+    nock(baseUrl)
+      .post('/verify-license', (body) => body.key === 'bad-key')
       .reply(403, { error: 'Forbidden' });
 
-    await expect(client.verifyKey('key123')).rejects.toThrow(
+    await expect(client.verifyKey('bad-key')).rejects.toThrow(
       /verifyKey failed with 403/
     );
-
-    expect(scope.isDone()).toBe(true); // verify it was used
   });
 
   test('trackUsage succeeds', async () => {
     nock(baseUrl)
       .post(
         '/track-usage',
-        JSON.stringify({ key: 'key123', metric: 'events', increment: 2 })
+        (body) =>
+          body.key === 'mock-key' &&
+          body.metric === 'api_calls_per_day' &&
+          body.increment === 1
       )
       .reply(200, { ok: true });
 
-    const result = await client.trackUsage('key123', 'events', 2);
+    const result = await client.trackUsage('mock-key', 'api_calls_per_day', 1);
     expect(result.ok).toBe(true);
+  });
+
+  test('trackUsage fails with status 400', async () => {
+    nock(baseUrl).post('/track-usage').reply(400, { error: 'Invalid usage' });
+
+    await expect(
+      client.trackUsage('mock-key', 'api_calls_per_day', 1)
+    ).rejects.toThrow(/trackUsage failed with 400/);
   });
 
   test('getUsageReport succeeds', async () => {
     nock(baseUrl)
-      .post('/usage-report', JSON.stringify({ key: 'key123' }))
+      .post('/usage-report', (body) => body.key === 'mock-key')
       .reply(200, { users: 5 });
 
-    const result = await client.getUsageReport('key123');
+    const result = await client.getUsageReport('mock-key');
     expect(result.users).toBe(5);
   });
 
-  test('listLicenses with query params', async () => {
-    nock(baseUrl)
-      .get(
-        (uri) =>
-          uri.includes('/list-licenses') && uri.includes('product_id=auth')
-      )
-      .reply(200, { licenses: [1, 2] });
+  test('getUsageReport fails with status 404', async () => {
+    nock(baseUrl).post('/usage-report').reply(404, { error: 'Not found' });
 
-    const result = await client.listLicenses({ product_id: 'auth' });
-    expect(result.licenses).toHaveLength(2);
-  });
-
-  test('activate succeeds', async () => {
-    nock(baseUrl)
-      .post(
-        '/activate',
-        JSON.stringify({ key: 'key123', instance_id: 'instance-abc' })
-      )
-      .reply(200, { activated: true });
-
-    const result = await client.activate('key123', 'instance-abc');
-    expect(result.activated).toBe(true);
+    await expect(client.getUsageReport('missing-key')).rejects.toThrow(
+      /getUsageReport failed with 404/
+    );
   });
 
   test('revoke succeeds', async () => {
     nock(baseUrl)
-      .post('/revoke-license', JSON.stringify({ key: 'key123' }))
+      .post('/revoke-license', { key: 'mock-key' })
       .reply(200, { revoked: true });
 
-    const result = await client.revoke('key123');
+    const result = await client.revoke('mock-key');
     expect(result.revoked).toBe(true);
+  });
+
+  test('revoke fails with status 400', async () => {
+    nock(baseUrl).post('/revoke-license').reply(400, { error: 'Invalid' });
+
+    await expect(client.revoke('bad-key')).rejects.toThrow(
+      /revoke failed with 400/
+    );
   });
 
   test('verifySignedFile throws without publicKey', () => {

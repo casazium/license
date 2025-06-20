@@ -13,5 +13,14 @@ CREATE TABLE IF NOT EXISTS license_keys (
   usage_count INTEGER DEFAULT 0,
   limits JSON DEFAULT '{}',
   usage JSON DEFAULT '{}',
-  revoked_at DATETIME
+  revoked_at DATETIME,
+  max_activations INTEGER DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS activations (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  key TEXT NOT NULL,
+  instance_id TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(key, instance_id)
 );

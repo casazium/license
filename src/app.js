@@ -14,6 +14,7 @@ import listLicensesRoute from './routes/list-licenses.js';
 import deleteLicenseRoute from './routes/delete-license.js';
 import trackUsageRoute from './routes/track-usage.js';
 import usageReportRoute from './routes/usage-report.js';
+import activateLicenseRoute from './routes/activate-license.js';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -48,6 +49,7 @@ export async function buildApp() {
   await deleteLicenseRoute(app);
   await trackUsageRoute(app);
   await usageReportRoute(app);
+  await activateLicenseRoute(app);
 
   app.addHook('onClose', async () => {
     db.close();
