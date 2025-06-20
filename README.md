@@ -8,10 +8,11 @@ A self-hostable Node.js service for managing encrypted license keys with expirat
 
 - AES-256-GCM encryption for license keys
 - License key generation and validation
-- Key expiration handling
+- Key expiration and revocation handling
 - Tiered license support (e.g., Free, Pro, Enterprise)
-- Fastify-based backend
-- Environment-specific config handling
+- Fastify-based backend with SQLite
+- Configurable usage limits and quota tracking
+- Activation enforcement to prevent license sharing
 - Designed for extensibility and embedding into other systems
 
 ### 🔐 License Lifecycle
@@ -27,9 +28,17 @@ A self-hostable Node.js service for managing encrypted license keys with expirat
 - `POST /track-usage` – increment named usage metrics (e.g., requests, users, activations)
 - `POST /usage-report` – return limits, usage, and remaining quota per metric
 
+### 💻 Activation Management
+
+- `POST /activate-license` – track and enforce instance-based activations
+  - Limits the number of unique instance activations per license
+  - Prevents overuse or sharing of single-use license keys
+  - Rejects revoked or expired licenses
+
 ### 🔎 License Management
 
-- `POST /list-license` – filter and paginate license keys by product, status, etc.
+- `POST /list-licenses` – filter and paginate license keys by product, status, etc.
+- `GET /export-license/:key` – retrieve signed license payload for offline use
 
 ---
 
@@ -37,7 +46,7 @@ A self-hostable Node.js service for managing encrypted license keys with expirat
 
 - All features tested with Vitest
 - SQLite in-memory or file-based isolation per test run
-- 80%+ test coverage, including edge and error paths
+- 90%+ test coverage, including edge and error paths
 
 ---
 
@@ -49,4 +58,5 @@ A self-hostable Node.js service for managing encrypted license keys with expirat
 ### Environment Variables
 
 - `ENCRYPTION_KEY` (required): hex-encoded 32-byte key used for AES-256-GCM
+- `JWT_SECRET` (required): secret used to sign license exports
 - `PORT` (optional): port Fastify listens on (default `3000`)
