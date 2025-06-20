@@ -1,62 +1,149 @@
-# Casazium License Server
+# Casazium License SDK
 
-[![Coverage Status](https://coveralls.io/repos/github/casazium/license/badge.svg?branch=main)](https://coveralls.io/github/casazium/license?branch=main)
-
-A self-hostable Node.js service for managing encrypted license keys with expiration and support for tiered plans. Designed to be used with other Casazium services like `casazium-auth`, or any commercial software product requiring secure license enforcement.
-
-## Features
-
-- AES-256-GCM encryption for license keys
-- License key generation and validation
-- Key expiration and revocation handling
-- Tiered license support (e.g., Free, Pro, Enterprise)
-- Fastify-based backend with SQLite
-- Configurable usage limits and quota tracking
-- Activation enforcement to prevent license sharing
-- Designed for extensibility and embedding into other systems
-
-### 🔐 License Lifecycle
-
-- `POST /issue-license` – generate new license keys
-- `POST /verify-license` – validate license status
-- `POST /verify-license-file` – validate cryptographically signed license files
-- `POST /revoke-license` – mark licenses as revoked
-- `POST /delete-license` – remove licenses permanently
-
-### 📊 Usage Enforcement
-
-- `POST /track-usage` – increment named usage metrics (e.g., requests, users, activations)
-- `POST /usage-report` – return limits, usage, and remaining quota per metric
-
-### 💻 Activation Management
-
-- `POST /activate-license` – track and enforce instance-based activations
-  - Limits the number of unique instance activations per license
-  - Prevents overuse or sharing of single-use license keys
-  - Rejects revoked or expired licenses
-
-### 🔎 License Management
-
-- `POST /list-licenses` – filter and paginate license keys by product, status, etc.
-- `GET /export-license/:key` – retrieve signed license payload for offline use
+The Casazium License SDK provides a lightweight, fully tested JavaScript client for integrating with the [Casazium License](../README.md) server. It supports verifying license keys, tracking usage, reporting metrics, managing activations, and verifying signed license files.
 
 ---
 
-## 🧪 Test Coverage
+## 📦 Installation
 
-- All features tested with Vitest
-- SQLite in-memory or file-based isolation per test run
-- 90%+ test coverage, including edge and error paths
+```bash
+npm install casazium-license-sdk
+```
+
+> If you're using this from within this repo, import directly from `./client.js`.
 
 ---
 
-## 📦 System Requirements
+## 🚀 Quick Start
+
+```js
+import { CasaziumLicenseClient } from './client.js';
+
+const client = new CasaziumLicenseClient({
+  baseUrl: 'http://localhost:3001',
+  publicKey: fs.readFileSync('public.pem', 'utf8'), // Optional, for signature checks
+});
+```
+
+---
+
+## 🔧 API Methods
+
+### `verifyKey(key: string)`
+
+Verifies a license key with the server.
+
+```js
+const result = await client.verifyKey('abc123');
+// → { valid: true, tier: 'pro', ... }
+```
+
+---
+
+### `trackUsage(key: string, metric: string, increment = 1)`
+
+Increments a usage counter (e.g., API calls, seats, features).
+
+```js
+await client.trackUsage('abc123', 'api_calls_per_day', 1);
+```
+
+---
+
+### `getUsageReport(key: string)`
+
+Fetches a usage summary for the given license.
+
+```js
+const report = await client.getUsageReport('abc123');
+```
+
+---
+
+### `activate(key: string, instanceId: string)`
+
+Registers a device or host with the license key.
+
+```js
+await client.activate('abc123', 'host-001');
+```
+
+---
+
+### `revoke(key: string)`
+
+Revokes a license key.
+
+```js
+await client.revoke('abc123');
+```
+
+---
+
+### `listLicenses(filters: object = {})`
+
+Fetches all licenses available to an admin token.
+
+```js
+const licenses = await client.listLicenses({
+  product_id: 'casazium-auth',
+  status: 'active',
+});
+```
+
+> Requires `adminToken` to be passed in the client constructor.
+
+---
+
+### `verifySignedFile({ license, signature, publicKey })`
+
+Verifies a signed license JSON object using a public key.
+
+```js
+const valid = client.verifySignedFile({
+  license,
+  signature,
+  publicKey: fs.readFileSync('public.pem', 'utf8'),
+});
+```
+
+---
+
+## 🛠️ CLI (Optional)
+
+The CLI in `sdk/cli.js` provides access to all the client features:
+
+```bash
+node sdk/cli.js verify --key abc123
+node sdk/cli.js track --key abc123 --metric api_calls_per_day --increment 1
+node sdk/cli.js report --key abc123
+node sdk/cli.js activate --key abc123 --instance-id host1
+node sdk/cli.js revoke --key abc123
+node sdk/cli.js list --admin-token YOUR_TOKEN
+node sdk/cli.js sign --license ./license.json --private-key ./private.pem
+node sdk/cli.js verify-file --license ./license.json --signature ABC --public-key ./public.pem
+```
+
+---
+
+## ✅ Tests
+
+All SDK features are covered by `client.test.js` using [Vitest](https://vitest.dev). To run tests:
+
+```bash
+npm test
+```
+
+---
+
+## 🔐 Requirements
 
 - Node.js v18+
-- SQLite 3 (via better-sqlite3)
+- Casazium License server running and accessible at `baseUrl`
+- Optional: public/private key pair for signing and verifying license files
 
-### Environment Variables
+---
 
-- `ENCRYPTION_KEY` (required): hex-encoded 32-byte key used for AES-256-GCM
-- `JWT_SECRET` (required): secret used to sign license exports
-- `PORT` (optional): port Fastify listens on (default `3000`)
+## 📄 License
+
+MIT License
