@@ -5,6 +5,7 @@ export default {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
       exclude: [
+        'dist',
         '**/tests/**',
         '**/*.test.js',
         '**/__mocks__/**',
