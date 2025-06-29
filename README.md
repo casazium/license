@@ -60,3 +60,14 @@ A self-hostable Node.js service for managing encrypted license keys with expirat
 - `ENCRYPTION_KEY` (required): hex-encoded 32-byte key used for AES-256-GCM
 - `JWT_SECRET` (required): secret used to sign license exports
 - `PORT` (optional): port Fastify listens on (default `3000`)
+
+## 🔨 Build
+
+Before starting the server or using the SDK run:
+
+```bash
+npm run build
+```
+
+This bundles the server (`index.js`) and SDK files into the `dist/` directory using esbuild.
+

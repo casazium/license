@@ -23,9 +23,12 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci
 
+      - name: 🔨 Build
+        run: npm run build
+
       - name: 🚀 Start license server
         run: |
-          nohup node src/start.js > server.log 2>&1 &
+          nohup node dist/index.js > server.log 2>&1 &
 
       - name: ⏱ Wait for server to become available
         run: |

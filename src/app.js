@@ -3,6 +3,7 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import Database from 'better-sqlite3';
 import config from '../src/lib/config.js';
 import issueLicenseRoute from './routes/issue-license.js';
@@ -28,7 +29,7 @@ export async function buildApp() {
   const db = new Database(process.env.DATABASE_FILE || './dev.db');
   db.pragma('foreign_keys = ON');
 
-  const schemaPath = path.resolve('./src/db/schema.sql');
+  const schemaPath = fileURLToPath(new URL('../src/db/schema.sql', import.meta.url));
   const schemaSql = await fs.readFile(schemaPath, 'utf-8');
   db.exec(schemaSql);
 

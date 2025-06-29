@@ -11,7 +11,8 @@
     "casazium-license": "./cli.js"
   },
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "build": "esbuild client.js --bundle --platform=node --format=esm --outfile=dist/client.js && esbuild cli.js --bundle --platform=node --format=esm --outfile=dist/cli.js"
   },
   "keywords": [
     "license",
@@ -30,6 +31,7 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "vitest": "^1.0.0"
+    "vitest": "^1.0.0",
+    "esbuild": "^0.20.0"
   }
 }
