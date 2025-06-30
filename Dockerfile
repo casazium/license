@@ -2,13 +2,15 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# Copy obfuscated code and env config
+# Copy app source and env config
 COPY dist/index.obfuscated.js ./index.js
 COPY .env.production .env
 
-# Copy production package manifest and install only production deps
-COPY package.production.json ./package.json
-RUN npm install --omit=dev
+# Copy real package files including lockfile
+COPY package.json package-lock.json ./
+
+# Install dependencies using lockfile for consistency
+RUN npm ci --omit=dev
 
 # Ensure database directory and schema exist
 RUN mkdir -p /app/data
