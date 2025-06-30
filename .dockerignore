@@ -6,7 +6,6 @@ coverage/
 *.test.js
 
 # Ignore build and dev configs
-esbuild.config.mjs
 obfuscator.config.json
 vitest.config.*
 

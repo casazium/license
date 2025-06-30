@@ -9,6 +9,9 @@ COPY .env.production .env
 # Copy real package files including lockfile
 COPY package.json package-lock.json ./
 
+# Copy build script config (was missing)
+COPY esbuild.config.mjs ./
+
 # Install dependencies using lockfile for consistency
 RUN npm ci --omit=dev
 
