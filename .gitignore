@@ -29,3 +29,5 @@ casazium-license
 .env
 .env.*
 
+.env
+dev.db

@@ -1,39 +1,25 @@
-# Exclude all src files *except* schema.sql
-src/*
-!src/db/
-!src/db/schema.sql
-
-# Ignore test files
+# Ignore development code and tests
+src/
 tests/
 .vitest/
 coverage/
 *.test.js
 
-# Ignore build scripts and configs not needed at runtime
+# Ignore build and dev configs
 esbuild.config.mjs
 obfuscator.config.json
 vitest.config.*
-node_modules/
 package-lock.json
 
-# Ignore Git and local dev files
-.git/
-.gitignore
-.env
-.env.*
-*.md
+# Ignore secrets and local environment files
+.env*
+!.env.production  # Allow only the production config
 *.log
 
-!.env.production
+# Git files
+.git/
+.gitignore
 
-# 🔒 Exclude non-runtime junk inside node_modules
-**/node_modules/**/test/
-**/node_modules/**/tests/
-**/node_modules/**/__tests__/
-**/node_modules/**/docs/
-**/node_modules/**/examples/
-**/node_modules/**/fixtures/
-**/node_modules/**/README.md
-**/node_modules/**/readme.md
-**/node_modules/**/CHANGELOG.md
-**/node_modules/**/changelog.md
+# Local SQLite databases
+*.db
+!/data/prod.db  # Only allow production DB if explicitly included
