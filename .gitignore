@@ -23,4 +23,9 @@ coverage/
 *.DS_Store
 *.swp
 casazium-license
-casazium-license
+
+# Local dev database and environment files
+*.db
+.env
+.env.*
+
