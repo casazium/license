@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Copy package files and install deps
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+RUN npm ci
 
 # Copy config files and source code
 COPY obfuscator.config.json ./
