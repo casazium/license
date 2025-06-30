@@ -9,7 +9,6 @@ coverage/
 esbuild.config.mjs
 obfuscator.config.json
 vitest.config.*
-package-lock.json
 
 # Ignore secrets and local environment files
 .env*
