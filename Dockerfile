@@ -23,7 +23,7 @@ WORKDIR /app
 
 # Copy only the obfuscated output and essentials
 COPY --from=builder /app/dist/index.obfuscated.js ./index.js
-COPY --from=builder /app/.env.production .env
+#COPY --from=builder /app/.env.production .env
 COPY --from=builder /app/data /app/data
 COPY --from=builder /app/src/db/schema.sql ./src/db/schema.sql
 COPY --from=builder /app/node_modules ./node_modules
