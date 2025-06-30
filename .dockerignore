@@ -6,7 +6,6 @@ coverage/
 *.test.js
 
 # Ignore build and dev configs
-obfuscator.config.json
 vitest.config.*
 
 # Ignore secrets and local environment files
