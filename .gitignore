@@ -2,15 +2,13 @@
 dist/
 *.obfuscated.js
 *.obfuscated.js.map
-casazium-license        # ⚠️ compiled binary
+casazium-license  # compiled binary
 
 # Docker artifacts
-.env.production
 package.production.json
 
-# Node.js dependencies
+# Node.js
 node_modules/
-package-lock.json
 
 # Test and coverage output
 coverage/
@@ -19,15 +17,9 @@ coverage/
 
 # Local/IDE
 *.log
-*.env.*
-*.DS_Store
 *.swp
-casazium-license
+.DS_Store
 
 # Local dev database and environment files
+.env*
 *.db
-.env
-.env.*
-
-.env
-dev.db
