@@ -7,7 +7,8 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
-# Copy source code and build config
+# Copy config files and source code
+COPY obfuscator.config.json ./
 COPY . .
 
 # Build the obfuscated output
