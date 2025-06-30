@@ -1,13 +1,9 @@
 # Ignore development code and tests
-src/
 tests/
+test/
 .vitest/
 coverage/
 *.test.js
-
-# ...except for needed files
-!src/app.js
-!src/db/schema.sql
 
 # Ignore build and dev configs
 obfuscator.config.json
