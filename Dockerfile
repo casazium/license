@@ -12,7 +12,9 @@ COPY obfuscator.config.json ./
 COPY . .
 
 # Build the obfuscated output
-RUN npm run build:prod  # assumes this generates dist/index.obfuscated.js
+#RUN npm run build:prod  # assumes this generates dist/index.obfuscated.js
+RUN npm run build:prod && echo "==== DIST CONTENTS ====" && ls -lh dist/
+
 
 # ---------- Stage 2: Runtime ----------
 FROM node:20-slim
