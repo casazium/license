@@ -6,28 +6,19 @@ import fetch from 'node-fetch';
 
 export async function fetchWithRetry(
   url,
-  options = {},
+  options,
   maxRetries = 3,
-  delay = 100
+  fetchFn = globalThis.fetch
 ) {
   let attempt = 0;
-
   while (attempt <= maxRetries) {
     try {
-      const res = await fetch(url, options);
-
-      // Don't consume body — just return response (client will handle .json() or .text())
-      if (res.ok || (res.status >= 400 && res.status < 500)) {
-        return res;
-      }
-
-      // Retry on 5xx errors
-      throw new Error(`HTTP ${res.status}`);
+      const res = await fetchFn(url, options);
+      if (res.ok || res.status < 500) return res;
     } catch (err) {
       if (attempt === maxRetries) throw err;
-      const backoff = delay * Math.pow(2, attempt);
-      await new Promise((resolve) => setTimeout(resolve, backoff));
-      attempt++;
     }
+    attempt++;
+    await new Promise((r) => setTimeout(r, 100 * attempt));
   }
 }

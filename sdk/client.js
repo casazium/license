@@ -3,11 +3,18 @@ import { fetchWithRetry } from './lib/http.js';
 import { createVerify } from 'node:crypto';
 
 export class CasaziumLicenseClient {
-  constructor({ baseUrl, publicKey, adminToken, retries = 3 }) {
+  constructor({
+    baseUrl,
+    publicKey,
+    adminToken,
+    retries = 3,
+    fetch = globalThis.fetch,
+  }) {
     this.baseUrl = baseUrl;
     this.publicKey = publicKey;
     this.adminToken = adminToken;
     this.retries = retries;
+    this.fetch = fetch;
   }
 
   async verifyKey(key) {
@@ -18,7 +25,8 @@ export class CasaziumLicenseClient {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key }),
       },
-      this.retries
+      this.retries,
+      this.fetch
     );
 
     if (!res.ok) {
@@ -37,7 +45,8 @@ export class CasaziumLicenseClient {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key, metric, increment }),
       },
-      this.retries
+      this.retries,
+      this.fetch
     );
     if (!res.ok) throw new Error(`trackUsage failed with ${res.status}`);
     return res.json();
@@ -51,7 +60,8 @@ export class CasaziumLicenseClient {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key }),
       },
-      this.retries
+      this.retries,
+      this.fetch
     );
     if (!res.ok) throw new Error(`getUsageReport failed with ${res.status}`);
     return res.json();
@@ -68,7 +78,12 @@ export class CasaziumLicenseClient {
       ? { Authorization: `Bearer ${this.adminToken}` }
       : {};
 
-    const res = await fetchWithRetry(url.toString(), { headers });
+    const res = await fetchWithRetry(
+      url.toString(),
+      { headers },
+      this.retries,
+      this.fetch
+    );
     if (!res.ok) throw new Error(`listLicenses failed with ${res.status}`);
     return res.json();
   }
@@ -81,9 +96,17 @@ export class CasaziumLicenseClient {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key, instance_id: instanceId }),
       },
-      this.retries
+      this.retries,
+      this.fetch
     );
-    if (!res.ok) throw new Error(`activate failed with ${res.status}`);
+    if (!res.ok) {
+      let message = `activate failed with ${res.status}`;
+      try {
+        const body = await res.json();
+        if (body?.error) message += `: ${body.error}`;
+      } catch (_) {}
+      throw new Error(message);
+    }
     return res.json();
   }
 
@@ -95,12 +118,30 @@ export class CasaziumLicenseClient {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key }),
       },
-      this.retries
+      this.retries,
+      this.fetch
     );
     if (!res.ok) throw new Error(`revoke failed with ${res.status}`);
     return res.json();
   }
 
+  async exportLicense(key) {
+    const res = await fetchWithRetry(
+      `${this.baseUrl}/export-license/${encodeURIComponent(key)}`,
+      { method: 'GET' },
+      this.retries,
+      this.fetch
+    );
+    if (!res.ok) throw new Error(`exportLicense failed with ${res.status}`);
+
+    const data = await res.json();
+    if (!data.signature) {
+      throw new Error('Invalid license: missing signature');
+    }
+
+    return data;
+  }
+  q;
   verifySignedFile({ license, signature }) {
     if (!this.publicKey) throw new Error('publicKey is required');
 
