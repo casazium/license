@@ -1,0 +1,18 @@
+# Ignore source and test files
+src/
+tests/
+.vitest/
+coverage/
+*.test.js
+
+# Ignore configs and local setup
+esbuild.config.mjs
+obfuscator.config.json
+vitest.config.*
+.env
+.env.*
+*.log
+*.md
+
+# Keep only dist output
+!dist/index.obfuscated.js

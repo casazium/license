@@ -1,0 +1,39 @@
+# Exclude all src files *except* schema.sql
+src/*
+!src/db/
+!src/db/schema.sql
+
+# Ignore test files
+tests/
+.vitest/
+coverage/
+*.test.js
+
+# Ignore build scripts and configs not needed at runtime
+esbuild.config.mjs
+obfuscator.config.json
+vitest.config.*
+node_modules/
+package-lock.json
+
+# Ignore Git and local dev files
+.git/
+.gitignore
+.env
+.env.*
+*.md
+*.log
+
+!.env.production
+
+# 🔒 Exclude non-runtime junk inside node_modules
+**/node_modules/**/test/
+**/node_modules/**/tests/
+**/node_modules/**/__tests__/
+**/node_modules/**/docs/
+**/node_modules/**/examples/
+**/node_modules/**/fixtures/
+**/node_modules/**/README.md
+**/node_modules/**/readme.md
+**/node_modules/**/CHANGELOG.md
+**/node_modules/**/changelog.md
