@@ -14,17 +14,15 @@ describe('GET / (Health Check)', () => {
     await app.close();
   });
 
-  it('should return 200 and a health message', async () => {
+  it('should return 200 and a health message with version', async () => {
     const res = await app.inject({
       method: 'GET',
       url: '/',
     });
 
     expect(res.statusCode).toBe(200);
-
-    const body = JSON.parse(res.body);
-    expect(body).toEqual({
-      message: 'License API is running',
-    });
+    const body = await res.json();
+    expect(body.message).toBe('License API is running');
+    expect(body.version).toMatch(/^\d+\.\d+\.\d+/);
   });
 });

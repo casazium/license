@@ -16,6 +16,7 @@ import trackUsageRoute from './routes/track-usage.js';
 import usageReportRoute from './routes/usage-report.js';
 import activateLicenseRoute from './routes/activate-license.js';
 import verifyLicenseFileBase64Route from './routes/verify-license-file-base64.js';
+import { serviceVersion } from './lib/version.js';
 
 import dotenv from 'dotenv';
 import exportLicenseFileRoute from './routes/export-license-file.js';
@@ -40,7 +41,10 @@ export async function buildApp() {
 
   // Health check
   app.get('/', async () => {
-    return { message: 'License API is running' };
+    return {
+      message: 'License API is running',
+      version: serviceVersion,
+    };
   });
 
   // Routes
