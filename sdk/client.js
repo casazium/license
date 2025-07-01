@@ -141,7 +141,7 @@ export class CasaziumLicenseClient {
 
     return data;
   }
-  q;
+
   verifySignedFile({ license, signature }) {
     if (!this.publicKey) throw new Error('publicKey is required');
 

@@ -15,8 +15,11 @@ import deleteLicenseRoute from './routes/delete-license.js';
 import trackUsageRoute from './routes/track-usage.js';
 import usageReportRoute from './routes/usage-report.js';
 import activateLicenseRoute from './routes/activate-license.js';
+import verifyLicenseFileBase64Route from './routes/verify-license-file-base64.js';
 
 import dotenv from 'dotenv';
+import exportLicenseFileRoute from './routes/export-license-file.js';
+
 dotenv.config();
 
 export async function buildApp() {
@@ -43,6 +46,7 @@ export async function buildApp() {
   // Routes
   await issueLicenseRoute(app);
   await verifyLicenseRoute(app);
+  await exportLicenseFileRoute(app);
   await exportLicenseRoute(app);
   await verifyLicenseFileRoute(app);
   await revokeLicenseRoute(app);
@@ -51,6 +55,7 @@ export async function buildApp() {
   await trackUsageRoute(app);
   await usageReportRoute(app);
   await activateLicenseRoute(app);
+  await verifyLicenseFileBase64Route(app);
 
   app.addHook('onClose', async () => {
     db.close();

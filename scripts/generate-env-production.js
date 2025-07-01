@@ -52,6 +52,7 @@ async function main() {
 
 ENCRYPTION_KEY=${generateHexKey(32)}
 ADMIN_API_KEY=${generateHexKey(16)}
+LICENSE_SIGNING_SECRET=${generateHexKey(32)}
 
 NODE_ENV=production
 PORT=${port}

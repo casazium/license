@@ -1,1 +1,0 @@
-{"key":"6c4f0c95-4c2f-4291-9503-3d2be21228ab","tier":"pro","product_id":"casazium-auth","issued_to":"alice@example.com","expires_at":"2026-01-01T00:00:00Z","limits":{"users":51,"features":["magic_link"]},"sig":"89d7c66596a84434cd5d8e8ba1d9eaaca59b823ec159ed506f3a84462cd04dc5"}
