@@ -21,6 +21,9 @@ FROM node:20-slim
 
 WORKDIR /app
 
+# 🔧 Install curl for healthcheck
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 # Copy only the obfuscated output and essentials
 COPY --from=builder /app/dist/index.obfuscated.js ./index.js
 #COPY --from=builder /app/.env.production .env
