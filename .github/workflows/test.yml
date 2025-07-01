@@ -24,6 +24,9 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci
 
+      - name: Set build version
+        run: echo "SERVICE_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+
       - name: 🔨 Build
         run: npm run build
 
