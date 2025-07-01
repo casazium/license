@@ -1,5 +1,6 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { buildApp } from '../src/app.js';
+import { api } from './helpers/api.js';
 
 describe('POST /activate-license', () => {
   let app;
@@ -27,7 +28,7 @@ describe('POST /activate-license', () => {
 
     const res = await app.inject({
       method: 'POST',
-      url: '/activate-license',
+      url: api('/activate-license'),
       payload: { key: 'abc123', instance_id: 'host1' },
     });
 
@@ -56,7 +57,7 @@ describe('POST /activate-license', () => {
 
     const res = await app.inject({
       method: 'POST',
-      url: '/activate-license',
+      url: api('/activate-license'),
       payload: { key: 'abc123', instance_id: 'host1' },
     });
 
@@ -85,7 +86,7 @@ describe('POST /activate-license', () => {
 
     const res = await app.inject({
       method: 'POST',
-      url: '/activate-license',
+      url: api('/activate-license'),
       payload: { key: 'abc123', instance_id: 'host2' },
     });
 
@@ -113,7 +114,7 @@ describe('POST /activate-license', () => {
 
     const res = await app.inject({
       method: 'POST',
-      url: '/activate-license',
+      url: api('/activate-license'),
       payload: { key: 'revokedkey', instance_id: 'host1' },
     });
 
@@ -137,7 +138,7 @@ describe('POST /activate-license', () => {
 
     const res = await app.inject({
       method: 'POST',
-      url: '/activate-license',
+      url: api('/activate-license'),
       payload: { key: 'expiredkey', instance_id: 'host1' },
     });
 
@@ -148,7 +149,7 @@ describe('POST /activate-license', () => {
   test('returns 404 for unknown key', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/activate-license',
+      url: api('/activate-license'),
       payload: { key: 'nosuchkey', instance_id: 'host1' },
     });
 
@@ -159,7 +160,7 @@ describe('POST /activate-license', () => {
   test('returns 400 for missing fields', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/activate-license',
+      url: api('/activate-license'),
       payload: {},
     });
 

@@ -6,6 +6,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import Database from 'better-sqlite3';
 import { fileURLToPath } from 'node:url';
+import { api } from './helpers/api.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const testDbFile = path.resolve(__dirname, `test-list-${process.pid}.db`);
@@ -62,7 +63,7 @@ describe('GET /list-licenses', () => {
   test('returns licenses with valid admin key', async () => {
     const res = await app.inject({
       method: 'GET',
-      url: '/list-licenses',
+      url: api('/list-licenses'),
       headers: { Authorization: `Bearer ${ADMIN_KEY}` },
     });
 
@@ -73,7 +74,7 @@ describe('GET /list-licenses', () => {
   test('supports status filter', async () => {
     const res = await app.inject({
       method: 'GET',
-      url: '/list-licenses?status=active',
+      url: api('/list-licenses?status=active'),
       headers: { Authorization: `Bearer ${ADMIN_KEY}` },
     });
 
@@ -84,7 +85,7 @@ describe('GET /list-licenses', () => {
   test('supports pagination', async () => {
     const res = await app.inject({
       method: 'GET',
-      url: '/list-licenses?limit=3&offset=2',
+      url: api('/list-licenses?limit=3&offset=2'),
       headers: { Authorization: `Bearer ${ADMIN_KEY}` },
     });
 
@@ -95,7 +96,7 @@ describe('GET /list-licenses', () => {
   test('returns 403 without valid admin key', async () => {
     const res = await app.inject({
       method: 'GET',
-      url: '/list-licenses',
+      url: api('/list-licenses'),
     });
 
     expect(res.statusCode).toBe(403);

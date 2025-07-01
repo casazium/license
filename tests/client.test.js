@@ -3,7 +3,7 @@ import nock from 'nock';
 import { CasaziumLicenseClient } from '../sdk/client.js';
 import crypto from 'node:crypto';
 
-const baseUrl = 'http://127.0.0.1:3001';
+const baseUrl = 'http://127.0.0.1:3001/v1';
 
 describe('CasaziumLicenseClient', () => {
   const client = new CasaziumLicenseClient({ baseUrl, retries: 2 });

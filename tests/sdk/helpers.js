@@ -1,13 +1,22 @@
-// tests/sdk/helpers.js
-
 import nock from 'nock';
 
-export async function issueTestLicense() {
+/**
+ * Issues a test license via HTTP and mocks the server response using nock.
+ *
+ * @param {Object} options
+ * @param {string} options.baseUrl - Base API URL including version prefix (e.g. 'http://localhost:3001/v1')
+ * @returns {Promise<string>} The issued license key
+ */
+export async function issueTestLicense({
+  baseUrl = 'http://127.0.0.1:3001/v1/v1',
+} = {}) {
   const key = 'mock-key';
+  const url = new URL('/issue-license', baseUrl);
 
-  nock('http://127.0.0.1:3001').post('/issue-license').reply(200, { key });
+  // Set up mock server response for this URL
+  nock(url.origin).post(url.pathname).reply(200, { key });
 
-  const res = await fetch('http://127.0.0.1:3001/issue-license', {
+  const res = await fetch(url.href, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -24,6 +33,6 @@ export async function issueTestLicense() {
     throw new Error(`Failed to issue test license: ${msg}`);
   }
 
-  const data = await res.json();
-  return data.key;
+  const { key: returnedKey } = await res.json();
+  return returnedKey;
 }

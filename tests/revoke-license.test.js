@@ -6,6 +6,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import Database from 'better-sqlite3';
 import { fileURLToPath } from 'node:url';
+import { api } from './helpers/api.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const testDbFile = path.resolve(__dirname, `test-revoke-${process.pid}.db`);
@@ -55,7 +56,7 @@ describe('POST /revoke-license', () => {
 
     const res = await app.inject({
       method: 'POST',
-      url: '/revoke-license',
+      url: api('/revoke-license'),
       payload: { key: 'active-key', reason: 'fraud detected' },
     });
 
@@ -70,7 +71,7 @@ describe('POST /revoke-license', () => {
   test('returns 404 for unknown license key', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/revoke-license',
+      url: api('/revoke-license'),
       payload: { key: 'nonexistent-key' },
     });
 
@@ -96,7 +97,7 @@ describe('POST /revoke-license', () => {
 
     const res = await app.inject({
       method: 'POST',
-      url: '/revoke-license',
+      url: api('/revoke-license'),
       payload: { key: 'revoked-key' },
     });
 
@@ -109,7 +110,7 @@ describe('POST /revoke-license', () => {
   test('returns 400 for missing key in payload', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/revoke-license',
+      url: api('/revoke-license'),
       payload: {},
     });
 

@@ -6,6 +6,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import Database from 'better-sqlite3';
 import { fileURLToPath } from 'node:url';
+import { api } from './helpers/api.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const testDbFile = path.resolve(__dirname, `test-delete-${process.pid}.db`);
@@ -58,7 +59,7 @@ describe('DELETE /delete-license', () => {
   test('successfully deletes an existing license', async () => {
     const res = await app.inject({
       method: 'DELETE',
-      url: '/delete-license',
+      url: api('/delete-license'),
       headers: { Authorization: `Bearer ${ADMIN_KEY}` },
       payload: { key: 'to-delete' },
     });
@@ -70,7 +71,7 @@ describe('DELETE /delete-license', () => {
   test('returns 404 for nonexistent key', async () => {
     const res = await app.inject({
       method: 'DELETE',
-      url: '/delete-license',
+      url: api('/delete-license'),
       headers: { Authorization: `Bearer ${ADMIN_KEY}` },
       payload: { key: 'does-not-exist' },
     });
@@ -82,7 +83,7 @@ describe('DELETE /delete-license', () => {
   test('returns 403 without valid admin key', async () => {
     const res = await app.inject({
       method: 'DELETE',
-      url: '/delete-license',
+      url: api('/delete-license'),
       payload: { key: 'to-delete' },
     });
 
@@ -93,7 +94,7 @@ describe('DELETE /delete-license', () => {
   test('returns 400 for missing key in request body', async () => {
     const res = await app.inject({
       method: 'DELETE',
-      url: '/delete-license',
+      url: api('/delete-license'),
       headers: { Authorization: `Bearer ${ADMIN_KEY}` },
       payload: {},
     });

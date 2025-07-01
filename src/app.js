@@ -44,18 +44,23 @@ export async function buildApp() {
   });
 
   // Routes
-  await issueLicenseRoute(app);
-  await verifyLicenseRoute(app);
-  await exportLicenseFileRoute(app);
-  await exportLicenseRoute(app);
-  await verifyLicenseFileRoute(app);
-  await revokeLicenseRoute(app);
-  await listLicensesRoute(app);
-  await deleteLicenseRoute(app);
-  await trackUsageRoute(app);
-  await usageReportRoute(app);
-  await activateLicenseRoute(app);
-  await verifyLicenseFileBase64Route(app);
+  await app.register(
+    async function (fastify) {
+      await issueLicenseRoute(fastify);
+      await verifyLicenseRoute(fastify);
+      await exportLicenseFileRoute(fastify);
+      await exportLicenseRoute(fastify);
+      await verifyLicenseFileRoute(fastify);
+      await revokeLicenseRoute(fastify);
+      await listLicensesRoute(fastify);
+      await deleteLicenseRoute(fastify);
+      await trackUsageRoute(fastify);
+      await usageReportRoute(fastify);
+      await activateLicenseRoute(fastify);
+      await verifyLicenseFileBase64Route(fastify);
+    },
+    { prefix: '/v1' }
+  );
 
   app.addHook('onClose', async () => {
     db.close();

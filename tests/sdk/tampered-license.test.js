@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { verifyLicense } from '../../sdk/verify.js'
+import { describe, it, expect } from 'vitest';
+import { verifyLicense } from '../../sdk/verify.js';
 
 describe('Tampered License', () => {
   it('fails verification on bad signature', () => {
@@ -7,9 +7,11 @@ describe('Tampered License', () => {
       key: 'test',
       tier: 'basic',
       expires_at: null,
-      signature: 'bad-signature'
-    }
+      signature: 'bad-signature',
+    };
 
-    expect(() => verifyLicense(license, 'correct-secret')).toThrow(/Invalid license signature/)
-  })
-})
+    expect(() => verifyLicense(license, 'correct-secret')).toThrow(
+      /Invalid license signature/
+    );
+  });
+});

@@ -23,3 +23,5 @@ coverage/
 # Local dev database and environment files
 .env*
 *.db
+
+.coveralls.yml

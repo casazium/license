@@ -6,6 +6,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import Database from 'better-sqlite3';
 import { fileURLToPath } from 'node:url';
+import { api } from './helpers/api.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const testDbFile = path.resolve(
@@ -61,7 +62,7 @@ describe('POST /usage-report', () => {
   test('returns usage report for valid license', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/usage-report',
+      url: api('/usage-report'),
       payload: { key: 'report-key' },
     });
 
@@ -85,7 +86,7 @@ describe('POST /usage-report', () => {
   test('returns 404 for unknown key', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/usage-report',
+      url: api('/usage-report'),
       payload: { key: 'missing-key' },
     });
 
@@ -96,7 +97,7 @@ describe('POST /usage-report', () => {
   test('returns 400 for missing key', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/usage-report',
+      url: api('/usage-report'),
       payload: {},
     });
 

@@ -7,6 +7,8 @@ import path from 'node:path';
 import Database from 'better-sqlite3';
 import { signLicense } from '../src/lib/license-signature.js';
 import { fileURLToPath } from 'node:url';
+import { api } from './helpers/api.js';
+import { api } from './helpers/api.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const testDbFile = path.resolve(__dirname, `test-verify-${process.pid}.db`);
@@ -67,7 +69,7 @@ describe('POST /verify-license-file', () => {
 
     const res = await app.inject({
       method: 'POST',
-      url: '/verify-license-file',
+      url: api('/verify-license-file'),
       payload: validLicense,
     });
 
@@ -101,7 +103,7 @@ describe('POST /verify-license-file', () => {
 
     const res = await app.inject({
       method: 'POST',
-      url: '/verify-license-file',
+      url: api('/verify-license-file'),
       payload: expired,
     });
 
@@ -135,7 +137,7 @@ describe('POST /verify-license-file', () => {
 
     const res = await app.inject({
       method: 'POST',
-      url: '/verify-license-file',
+      url: api('/verify-license-file'),
       payload: revoked,
     });
 
@@ -171,7 +173,7 @@ describe('POST /verify-license-file', () => {
 
     const res = await app.inject({
       method: 'POST',
-      url: '/verify-license-file',
+      url: api('/verify-license-file'),
       payload: tampered,
     });
 

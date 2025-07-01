@@ -6,6 +6,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import Database from 'better-sqlite3';
 import { fileURLToPath } from 'node:url';
+import { api } from './helpers/api.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const testDbFile = path.resolve(__dirname, `test-usage-${process.pid}.db`);
@@ -78,7 +79,7 @@ describe('POST /track-usage (extended)', () => {
   test('increments usage for a named metric', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/track-usage',
+      url: api('/track-usage'),
       payload: { key: 'active-key', metric: 'requests', increment: 2 },
     });
 
@@ -89,7 +90,7 @@ describe('POST /track-usage (extended)', () => {
   test('returns 403 if named limit exceeded', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/track-usage',
+      url: api('/track-usage'),
       payload: { key: 'active-key', metric: 'requests', increment: 10 },
     });
 
@@ -102,7 +103,7 @@ describe('POST /track-usage (extended)', () => {
   test('returns 403 if metric not allowlisted', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/track-usage',
+      url: api('/track-usage'),
       payload: { key: 'active-key', metric: 'activations', increment: 1 },
     });
 
@@ -113,7 +114,7 @@ describe('POST /track-usage (extended)', () => {
   test('returns 403 for revoked license', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/track-usage',
+      url: api('/track-usage'),
       payload: { key: 'revoked-key', metric: 'requests', increment: 1 },
     });
 
@@ -124,7 +125,7 @@ describe('POST /track-usage (extended)', () => {
   test('returns 403 for expired license', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/track-usage',
+      url: api('/track-usage'),
       payload: { key: 'expired-key', metric: 'requests', increment: 1 },
     });
 
@@ -135,7 +136,7 @@ describe('POST /track-usage (extended)', () => {
   test('returns 404 for nonexistent key', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/track-usage',
+      url: api('/track-usage'),
       payload: { key: 'missing-key', metric: 'requests', increment: 1 },
     });
 
@@ -146,7 +147,7 @@ describe('POST /track-usage (extended)', () => {
   test('returns 400 for invalid input', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/track-usage',
+      url: api('/track-usage'),
       payload: {},
     });
 

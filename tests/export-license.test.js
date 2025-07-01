@@ -7,6 +7,7 @@ import path from 'node:path';
 import Database from 'better-sqlite3';
 import { fileURLToPath } from 'node:url';
 import { signLicense } from '../src/lib/license-signature.js';
+import { api } from './helpers/api.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const testDbFile = path.resolve(__dirname, `test-export-${process.pid}.db`);
@@ -54,7 +55,7 @@ describe('GET /export-license/:key', () => {
 
     const res = await app.inject({
       method: 'GET',
-      url: '/export-license/valid-key',
+      url: api('/export-license/valid-key'),
     });
 
     expect(res.statusCode).toBe(200);
@@ -71,7 +72,7 @@ describe('GET /export-license/:key', () => {
   test('returns 404 for unknown license key', async () => {
     const res = await app.inject({
       method: 'GET',
-      url: '/export-license/unknown-key',
+      url: api('/export-license/unknown-key'),
     });
 
     expect(res.statusCode).toBe(404);
@@ -97,7 +98,7 @@ describe('GET /export-license/:key', () => {
 
     const res = await app.inject({
       method: 'GET',
-      url: '/export-license/missing-secret-key',
+      url: api('/export-license/missing-secret-key'),
     });
 
     expect(res.statusCode).toBe(500);

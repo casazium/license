@@ -13,6 +13,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import Database from 'better-sqlite3';
 import { fileURLToPath } from 'node:url';
+import { api } from './helpers/api.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const testDbFile = path.resolve(__dirname, `test-${process.pid}.db`);
@@ -44,7 +45,7 @@ describe('POST /issue-license', () => {
   test('returns 200 and a license key with valid input', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/issue-license',
+      url: api('/issue-license'),
       payload: {
         tier: 'pro',
         product_id: 'casazium-auth',
@@ -63,7 +64,7 @@ describe('POST /issue-license', () => {
   test('returns 400 for missing fields', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/issue-license',
+      url: api('/issue-license'),
       payload: { product_id: 'casazium-auth' },
     });
 
@@ -74,7 +75,7 @@ describe('POST /issue-license', () => {
   test('returns 400 for unknown limit key', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/issue-license',
+      url: api('/issue-license'),
       payload: {
         tier: 'pro',
         product_id: 'casazium-auth',
@@ -91,7 +92,7 @@ describe('POST /issue-license', () => {
   test('returns 400 for malformed features list', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/issue-license',
+      url: api('/issue-license'),
       payload: {
         tier: 'pro',
         product_id: 'casazium-auth',
@@ -112,7 +113,7 @@ describe('POST /verify-license', () => {
   beforeEach(async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/issue-license',
+      url: api('/issue-license'),
       payload: {
         tier: 'pro',
         product_id: 'casazium-auth',
@@ -127,7 +128,7 @@ describe('POST /verify-license', () => {
   test('returns valid: true for active, unexpired license', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/verify-license',
+      url: api('/verify-license'),
       payload: { key },
     });
 
@@ -140,7 +141,7 @@ describe('POST /verify-license', () => {
   test('returns 404 for unknown key', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/verify-license',
+      url: api('/verify-license'),
       payload: { key: 'non-existent-key' },
     });
 
@@ -151,7 +152,7 @@ describe('POST /verify-license', () => {
   test('returns 403 for expired license', async () => {
     const expiredRes = await app.inject({
       method: 'POST',
-      url: '/issue-license',
+      url: api('/issue-license'),
       payload: {
         tier: 'free',
         product_id: 'casazium-auth',
@@ -163,7 +164,7 @@ describe('POST /verify-license', () => {
 
     const res = await app.inject({
       method: 'POST',
-      url: '/verify-license',
+      url: api('/verify-license'),
       payload: { key: expiredKey },
     });
 
@@ -181,7 +182,7 @@ describe('POST /verify-license', () => {
 
     const res = await app.inject({
       method: 'POST',
-      url: '/verify-license',
+      url: api('/verify-license'),
       payload: { key },
     });
 
@@ -193,7 +194,7 @@ describe('POST /verify-license', () => {
   test('returns 400 for missing key in payload', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/verify-license',
+      url: api('/verify-license'),
       payload: {},
     });
 
