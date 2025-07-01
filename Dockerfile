@@ -25,7 +25,7 @@ WORKDIR /app
 COPY --from=builder /app/dist/index.obfuscated.js ./index.js
 #COPY --from=builder /app/.env.production .env
 COPY --from=builder /app/data /app/data
-COPY --from=builder /app/src/db/schema.sql ./src/db/schema.sql
+#COPY --from=builder /app/src/db/schema.sql ./src/db/schema.sql
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
