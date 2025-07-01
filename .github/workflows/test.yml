@@ -43,7 +43,7 @@ jobs:
         run: npm run coverage
 
       - name: 📤 Upload coverage report
-        if: '!env.ACT'
+        if: ${{ env.ACT != 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: lcov-report
@@ -53,3 +53,4 @@ jobs:
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ./coverage/lcov.info
