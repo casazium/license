@@ -1,6 +1,6 @@
 # Casazium License Server
 
-[![Coverage Status](https://coveralls.io/repos/github/casazium/license/badge.svg?branch=main)](https://coveralls.io/github/casazium/license?branch=main)git add
+[![Coverage Status](https://coveralls.io/repos/github/casazium/license/badge.svg?branch=main)](https://coveralls.io/github/casazium/license?branch=main)
 
 A lightweight, secure, and self-hostable license management API built with Fastify, SQLite, and Node.js.
 
