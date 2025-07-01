@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
+      LICENSE_SIGNING_SECRET: ${{ secrets.LICENSE_SIGNING_SECRET }}
     steps:
       - name: 🧾 Checkout code
         uses: actions/checkout@v3
@@ -41,6 +42,9 @@ jobs:
 
       - name: 🧪 Run Vitest with coverage
         run: npm run coverage
+
+      - name: 📁 Debug lcov.info exists
+        run: ls -l ./coverage/lcov.info
 
       - name: 📤 Upload coverage report
         if: ${{ env.ACT != 'true' }}
