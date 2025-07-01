@@ -27,6 +27,9 @@ jobs:
       - name: Set build version
         run: echo "SERVICE_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
 
+      - name: 📢 Echo service version
+        run: echo "Service version is $SERVICE_VERSION"
+
       - name: 🔨 Build
         run: npm run build
 
