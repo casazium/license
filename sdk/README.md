@@ -1,149 +1,139 @@
-# Casazium License SDK
+# @casazium/license-sdk
 
-The Casazium License SDK provides a lightweight, fully tested JavaScript client for integrating with the [Casazium License](../README.md) server. It supports verifying license keys, tracking usage, reporting metrics, managing activations, and verifying signed license files.
+A lightweight JavaScript SDK for interacting with the [Casazium License Server](https://github.com/rcasazza/casazium-license).  
+Supports online activation, key verification, license file validation, and optional offline enforcement via system fingerprinting.
+
+---
+
+## ✨ Features
+
+- 🔐 Activate licenses on a specific server or device
+- ✅ Verify license keys and encrypted license files
+- 🖥️ Lock licenses to system fingerprints (`machineId`)
+- 📁 Offline license file validation with HMAC signatures
+- 🧪 Fully tested and production-ready
 
 ---
 
 ## 📦 Installation
 
 ```bash
-npm install casazium-license-sdk
+npm install @casazium/license-sdk
 ```
-
-> If you're using this from within this repo, import directly from `./client.js`.
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Usage
+
+### 1. Instantiate the Client
 
 ```js
-import { CasaziumLicenseClient } from './client.js';
+import { CasaziumLicenseClient } from '@casazium/license-sdk';
 
 const client = new CasaziumLicenseClient({
-  baseUrl: 'http://localhost:3001',
-  publicKey: fs.readFileSync('public.pem', 'utf8'), // Optional, for signature checks
+  baseUrl: 'https://your-license-server.com/v1',
 });
 ```
 
 ---
 
-## 🔧 API Methods
-
-### `verifyKey(key: string)`
-
-Verifies a license key with the server.
+### 2. Activate a License
 
 ```js
-const result = await client.verifyKey('abc123');
-// → { valid: true, tier: 'pro', ... }
+import { getFingerprint } from '@casazium/license-sdk/fingerprint.js';
+
+const key = 'your-license-key';
+const instance_id = getFingerprint();
+
+await client.activate(key, instance_id);
 ```
 
 ---
 
-### `trackUsage(key: string, metric: string, increment = 1)`
-
-Increments a usage counter (e.g., API calls, seats, features).
+### 3. Verify a License Key
 
 ```js
-await client.trackUsage('abc123', 'api_calls_per_day', 1);
+const result = await client.verifyKey('your-license-key');
+
+if (result.valid) {
+  console.log('License is valid!');
+}
 ```
 
 ---
 
-### `getUsageReport(key: string)`
-
-Fetches a usage summary for the given license.
+### 4. Verify a Signed License File
 
 ```js
-const report = await client.getUsageReport('abc123');
+import fs from 'node:fs/promises';
+
+const license = JSON.parse(await fs.readFile('license.lic.json', 'utf8'));
+const signature = license.sig;
+
+const isValid = client.verifySignedFile({ license, signature });
+
+if (isValid) {
+  console.log('Signed license file is valid');
+}
 ```
 
 ---
 
-### `activate(key: string, instanceId: string)`
-
-Registers a device or host with the license key.
+## 🧠 Fingerprinting (for License Locking)
 
 ```js
-await client.activate('abc123', 'host-001');
+import { getFingerprint } from '@casazium/license-sdk/fingerprint.js';
+
+const fingerprint = getFingerprint(); // consistent per machine
+```
+
+> Uses `node-machine-id` to generate a unique machine identifier.  
+> Safe for Linux, macOS, Windows, containers, and most VMs.
+
+---
+
+## 📁 Offline Usage Idea
+
+You can store the following on disk:
+
+```json
+{
+  "license": { ... },
+  "signature": "..."
+}
+```
+
+Then verify it at runtime with:
+
+```js
+import { CasaziumLicenseClient } from '@casazium/license-sdk';
+
+const client = new CasaziumLicenseClient({ publicKey }); // Required
+
+client.verifySignedFile({ license, signature }); // true or false
 ```
 
 ---
 
-### `revoke(key: string)`
-
-Revokes a license key.
-
-```js
-await client.revoke('abc123');
-```
-
----
-
-### `listLicenses(filters: object = {})`
-
-Fetches all licenses available to an admin token.
-
-```js
-const licenses = await client.listLicenses({
-  product_id: 'casazium-auth',
-  status: 'active',
-});
-```
-
-> Requires `adminToken` to be passed in the client constructor.
-
----
-
-### `verifySignedFile({ license, signature, publicKey })`
-
-Verifies a signed license JSON object using a public key.
-
-```js
-const valid = client.verifySignedFile({
-  license,
-  signature,
-  publicKey: fs.readFileSync('public.pem', 'utf8'),
-});
-```
-
----
-
-## 🛠️ CLI (Optional)
-
-The CLI in `sdk/cli.js` provides access to all the client features:
+## 🧪 Run Tests
 
 ```bash
-node sdk/cli.js verify --key abc123
-node sdk/cli.js track --key abc123 --metric api_calls_per_day --increment 1
-node sdk/cli.js report --key abc123
-node sdk/cli.js activate --key abc123 --instance-id host1
-node sdk/cli.js revoke --key abc123
-node sdk/cli.js list --admin-token YOUR_TOKEN
-node sdk/cli.js sign --license ./license.json --private-key ./private.pem
-node sdk/cli.js verify-file --license ./license.json --signature ABC --public-key ./public.pem
-```
-
----
-
-## ✅ Tests
-
-All SDK features are covered by `client.test.js` using [Vitest](https://vitest.dev). To run tests:
-
-```bash
+npm install
 npm test
 ```
 
 ---
 
-## 🔐 Requirements
+## 🛠 CLI (Optional)
 
-- Node.js v18+
-- Casazium License server running and accessible at `baseUrl`
-- Optional: public/private key pair for signing and verifying license files
+If using the included CLI:
+
+```bash
+npx casazium-license verify --file ./license.lic.json
+```
 
 ---
 
 ## 📄 License
 
-MIT License
+MIT © 2025 [Bob Casazza](https://github.com/rcasazza)

@@ -1,11 +1,14 @@
 {
-  "name": "casazium-license-client",
+  "name": "@casazium/license-sdk",
   "version": "0.1.0",
-  "description": "Node.js SDK and CLI for Casazium License Server",
+  "description": "SDK and CLI for Casazium License Server. Supports activation, validation, and offline license checks.",
   "type": "module",
   "main": "client.js",
   "exports": {
-    "./client": "./client.js"
+    ".": "./client.js",
+    "./client": "./client.js",
+    "./fingerprint": "./fingerprint.js",
+    "./verify": "./verify.js"
   },
   "bin": {
     "casazium-license": "./cli.js"
@@ -19,7 +22,10 @@
     "sdk",
     "cli",
     "casazium",
-    "licensing"
+    "licensing",
+    "activation",
+    "fingerprint",
+    "offline-verification"
   ],
   "author": "Bob Casazza",
   "license": "MIT",
@@ -28,6 +34,7 @@
     "url": "https://github.com/rcasazza/casazium-license"
   },
   "dependencies": {
+    "node-machine-id": "^1.1.12",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
