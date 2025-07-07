@@ -1,6 +1,6 @@
 // src/routes/list-licenses.js
 
-import { requireAdmin } from '../hooks/require-admin';
+import { requireAdmin } from '../hooks/require-admin.js';
 
 /**
  * Register the GET /list-licenses route
@@ -22,6 +22,7 @@ export default async function listLicensesRoute(fastify) {
           clauses.push('product_id = @product_id');
           params.product_id = product_id;
         }
+
         if (status) {
           clauses.push('status = @status');
           params.status = status;
@@ -30,16 +31,25 @@ export default async function listLicensesRoute(fastify) {
         const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
 
         const query = `
-        SELECT key, tier, product_id, issued_to, issued_at, expires_at, status, usage_limit, usage_count, revoked_at
-        FROM license_keys
-        ${where}
-        ORDER BY issued_at DESC
-        LIMIT @limit OFFSET @offset
-      `;
+          SELECT
+            key,
+            tier,
+            product_id,
+            issued_to,
+            issued_at,
+            expires_at,
+            status,
+            usage_limit,
+            usage_count,
+            revoked_at
+          FROM license_keys
+          ${where}
+          ORDER BY issued_at DESC
+          LIMIT @limit OFFSET @offset
+        `;
 
-        const rows = db.prepare(query).all(params);
-
-        return reply.send({ licenses: rows });
+        const licenses = db.prepare(query).all(params);
+        return reply.send({ licenses });
       } catch (err) {
         fastify.log.error(err);
         return reply.status(500).send({ error: 'Failed to fetch licenses' });

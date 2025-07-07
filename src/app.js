@@ -27,7 +27,12 @@ export async function buildApp() {
   const app = Fastify({ logger: config.NODE_ENV !== 'test' });
 
   // Register plugins
-  await app.register(cors);
+  await app.register(cors, {
+    origin: true, // or use 'http://localhost:5173' for stricter security
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  });
 
   const db = new Database(process.env.DATABASE_FILE || './dev.db');
   db.pragma('foreign_keys = ON');
