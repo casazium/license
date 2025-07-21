@@ -1,15 +1,35 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { buildApp } from '../src/app.js';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { api } from './helpers/api.js';
+import fs from 'node:fs/promises';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const testDbFile = path.resolve(__dirname, `test-activate-license-${process.pid}.db`);
 
 describe('POST /activate-license', () => {
   let app;
 
   beforeEach(async () => {
+    process.env.DB_FILE = testDbFile;
+    process.env.SKIP_DOTENV = true;
     app = await buildApp();
     const db = app.sqlite;
     db.prepare('DELETE FROM license_keys').run();
     db.prepare('DELETE FROM activations').run();
+  });
+
+  afterAll(async () => {
+    await app?.close?.();
+    try {
+      console.log(testDbFile);
+      await fs.unlink(testDbFile);
+    } catch (err) {
+      if (err.code !== 'ENOENT') {
+        console.error(`Failed to delete test DB: ${err.message}`);
+      }
+    }
   });
 
   test('successfully activates a new instance', async () => {

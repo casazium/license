@@ -9,7 +9,8 @@ import { validateLicenseLimits } from '../lib/validateLicenseLimits.js';
  */
 export default async function issueLicenseRoute(fastify) {
   fastify.post('/issue-license', async (request, reply) => {
-    const { tier, product_id, issued_to, expires_at, limits } = request.body;
+    const { tier, product_id, issued_to, expires_at, limits, max_activations } =
+      request.body;
 
     // Basic required fields
     if (!tier || !product_id || !issued_to || !expires_at) {
@@ -28,16 +29,18 @@ export default async function issueLicenseRoute(fastify) {
     try {
       db.prepare(
         `
-  INSERT INTO license_keys (key, tier, expires_at, issued_to, limits, product_id)
-  VALUES (?, ?, ?, ?, ?, ?)
-`
+        INSERT INTO license_keys (
+          key, tier, expires_at, issued_to, limits, product_id, max_activations
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+      `
       ).run(
         licenseKey,
         tier,
         expires_at,
         issued_to,
         JSON.stringify(limits || {}),
-        product_id
+        product_id,
+        typeof max_activations === 'number' ? max_activations : 1
       );
 
       return reply.send({ key: licenseKey, status: 'issued' });

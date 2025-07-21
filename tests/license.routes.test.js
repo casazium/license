@@ -21,16 +21,8 @@ const testDbFile = path.resolve(__dirname, `test-${process.pid}.db`);
 let app;
 
 beforeAll(async () => {
-  // Setup test DB from schema
-  const schema = await fs.readFile(
-    path.resolve(__dirname, '../src/db/schema.sql'),
-    'utf-8'
-  );
-  const db = new Database(testDbFile);
-  db.exec(schema);
-  db.close();
-
-  process.env.DATABASE_FILE = testDbFile;
+  process.env.DB_FILE = testDbFile;
+  process.env.SKIP_DOTENV = true;
   app = await buildApp();
 });
 

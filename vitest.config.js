@@ -5,12 +5,13 @@ export default {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
       exclude: [
-        'dist',
+        '**/dist/**',
         '**/tests/**',
         '**/*.test.js',
         '**/__mocks__/**',
         '**/node_modules/**',
         'vitest.config.js',
+        'esbuild.config.mjs',
         'index.js', // ← main entrypoint
         'src/db/init.js', // ← bootstrap DB setup
         'lib/config.js', // ← config loader (optional coverage)
@@ -21,7 +22,7 @@ export default {
     },
     globals: true,
     environment: 'node',
-    setupFiles: ['./tests/setup.js'],
+    //    setupFiles: ['./tests/setup.js'],
     silent: false,
   },
 };

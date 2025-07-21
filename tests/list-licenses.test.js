@@ -15,15 +15,9 @@ const ADMIN_KEY = 'test-admin-secret';
 let app;
 
 beforeAll(async () => {
-  const schema = await fs.readFile(
-    path.resolve(__dirname, '../src/db/schema.sql'),
-    'utf-8'
-  );
-  const db = new Database(testDbFile);
-  db.exec(schema);
-  db.close();
 
-  process.env.DATABASE_FILE = testDbFile;
+  process.env.DB_FILE = testDbFile;
+  process.env.SKIP_DOTENV = true;
   process.env.ADMIN_API_KEY = ADMIN_KEY;
   app = await buildApp();
 
@@ -48,7 +42,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await app?.close?.();
-  if (!testDbFile) return;
+//  if (!testDbFile) return;
   try {
     await fs.unlink(testDbFile);
     // console.log(`Deleted test DB: ${filePath}`);

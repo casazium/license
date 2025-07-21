@@ -15,15 +15,9 @@ const ADMIN_KEY = 'test-admin-secret';
 let app;
 
 beforeAll(async () => {
-  const schema = await fs.readFile(
-    path.resolve(__dirname, '../src/db/schema.sql'),
-    'utf-8'
-  );
-  const db = new Database(testDbFile);
-  db.exec(schema);
-  db.close();
-
   process.env.ADMIN_API_KEY = ADMIN_KEY;
+  process.env.DB_FILE = testDbFile;
+  process.env.SKIP_DOTENV = true;
   app = await buildApp();
 
   const db2 = app.sqlite;
@@ -100,6 +94,10 @@ describe('DELETE /delete-license', () => {
     });
 
     expect(res.statusCode).toBe(400);
-    expect(res.json()).toEqual({ error: 'License key is required' });
+    expect(res.json()).toMatchObject({
+      statusCode: 400,
+      error: 'Bad Request',
+      message: expect.stringContaining("must have required property 'key'"),
+    });
   });
 });

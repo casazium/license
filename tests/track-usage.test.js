@@ -14,15 +14,8 @@ const testDbFile = path.resolve(__dirname, `test-usage-${process.pid}.db`);
 let app;
 
 beforeAll(async () => {
-  const schema = await fs.readFile(
-    path.resolve(__dirname, '../src/db/schema.sql'),
-    'utf-8'
-  );
-  const db = new Database(testDbFile);
-  db.exec(schema);
-  db.close();
-
-  process.env.DATABASE_FILE = testDbFile;
+  process.env.DB_FILE = testDbFile;
+  process.env.SKIP_DOTENV = true;
   app = await buildApp();
 
   const db2 = app.sqlite;
@@ -64,7 +57,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await app?.close?.();
-  if (!testDbFile) return;
   try {
     await fs.unlink(testDbFile);
     // console.log(`Deleted test DB: ${filePath}`);

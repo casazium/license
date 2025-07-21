@@ -13,6 +13,8 @@ export default async function activateLicenseRoute(fastify) {
     }
 
     const db = fastify.sqlite;
+    const row = db.prepare('PRAGMA database_list').get();
+    console.log('Database file:', row.file);
 
     try {
       const license = db

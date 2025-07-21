@@ -22,7 +22,8 @@ beforeAll(async () => {
   db.exec(schema);
   db.close();
 
-  process.env.DATABASE_FILE = testDbFile;
+  process.env.DB_FILE = testDbFile;
+  process.env.SKIP_DOTENV = true;
   app = await buildApp();
 });
 

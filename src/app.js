@@ -20,6 +20,10 @@ import { serviceVersion } from './lib/version.js';
 
 import dotenv from 'dotenv';
 import exportLicenseFileRoute from './routes/export-license-file.js';
+import listActivationsRoute from './routes/list-activations.js';
+import validateLicenseRoute from './routes/validate-license.js';
+import adminStatsRoute from './routes/admin-status.js';
+import recentActivationsRoute from './routes/recent-activations.js';
 
 dotenv.config();
 
@@ -34,7 +38,8 @@ export async function buildApp() {
     optionsSuccessStatus: 204,
   });
 
-  const db = new Database(process.env.DATABASE_FILE || './dev.db');
+  console.log(process.env.DB_FILE);
+  const db = new Database(process.env.DB_FILE || './dev.db');
   db.pragma('foreign_keys = ON');
 
   // ✅ Compatible path resolution for CommonJS or esbuild output
@@ -67,8 +72,12 @@ export async function buildApp() {
       await usageReportRoute(fastify);
       await activateLicenseRoute(fastify);
       await verifyLicenseFileBase64Route(fastify);
+      await listActivationsRoute(fastify);
+      await validateLicenseRoute(fastify);
+      await adminStatsRoute(fastify);
+      await recentActivationsRoute(fastify);
     },
-    { prefix: '/v1' }
+    { prefix: '/v1' },
   );
 
   app.addHook('onClose', async () => {
